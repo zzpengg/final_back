@@ -8,7 +8,7 @@
 const jwt = require('jwt-simple');
 
 module.exports = {
-	addLike: function(req, res){
+	addLike: async(req, res) => {
 		var token = req.headers['x-access-token'];
 		console.log("token = " + token);
 		var secret = 'zzggzz';
@@ -23,41 +23,56 @@ module.exports = {
 					});
 				}
 				else{
-					console.log("id = " + decoded.iss);
+					console.log("user id = " + decoded.iss);
 					var userId = decoded.iss;
-					Like.create({
-						commentId: commentId,
-						userId: userId,
+					let repeatLike = await Like.findOne({
+						commentId,
+						userId,
 						like: 1,
-					}).exec(function(err,data){
-						if(err){
-							console.log("error = " + err);
-							res.ok({
-								text: "like create not success"
-							})
-						}
-						else{
-							Comment.find({
-								id: commentId
-							}).exec(function(err, data){
-								var like = data.like || 0;
-								console.log("like = " + like);
-								like = like + 1;
-								Comment.update({
-									id: commentId
-								},{
-									like: like
-								}).exec(function(err, data){
-									console.log("dataLike = " + data[0].like);
-									console.log("data = " + data);
-									res.ok({
-										text: "like create success",
-									})
-								})
-								
-							})
-							
-						}
+					});
+					console.log(repeatLike);
+					if(!repeatLike){
+						console.log("null");
+						await Like.create({
+							commentId,
+							userId,
+							like: 1,
+						})
+						console.log("commentId = " + commentId);
+						let newLike = await Like.find({
+							commentId,
+							like: 1,
+							userId: userId,
+						})
+						await Comment.update({
+							id: commentId
+						}, {
+							like: newLike.length
+						})
+						console.log("newLike.length = " + newLike.length);
+						return res.ok({
+							text: "like create success",
+						})
+					}
+					console.log("repeatLike = ");
+					console.log(repeatLike.id);
+					await Like.destroy({
+						id: repeatLike.id
+					})
+					let findLike = await Like.find({
+						commentId,
+						like: 1,
+					})
+					let like = findLike.length;
+					console.log('like = ' + like);
+					await Comment.update({
+						id: commentId
+					}, {
+						like: like
+					})
+						
+					return res.ok({
+						text: "like destroy success"
 					})
 				}
 			}catch(error){
@@ -69,7 +84,7 @@ module.exports = {
 		}
 	},
 	
-	addDislike: (req, res) => {
+	addDislike: async(req, res) => {
 		var token = req.headers['x-access-token'];
 		console.log("token = " + token);
 		var secret = 'zzggzz';
@@ -84,111 +99,56 @@ module.exports = {
 					});
 				}
 				else{
-					console.log("id = " + decoded.iss);
+					console.log("user id = " + decoded.iss);
 					var userId = decoded.iss;
-					Like.create({
-						commentId: commentId,
-						userId: userId,
-						like: 0,
-					}).exec(function(err,data){
-						if(err){
-							console.log("error = " + err);
-							res.ok({
-								text: "dislike create not success"
-							})
-						}
-						else{
-							console.log("data = " + data);
-							res.ok({
-								text: "dislike create success",
-							})
-						}
-					})
-				}
-			}catch(error){
-				console.log("catch error = " + error);
-				res.ok({
-					text: "something went wrong" + error
-				})
-			}
-		}
-	},
-	
-	delLike: function(req, res){
-		var token = req.headers['x-access-token'];
-		console.log("token = " + token);
-		var secret = 'zzggzz';
-		var likeId = req.body.likeId;
-		console.log(likeId);
-		if(token){
-			try{
-				var decoded = jwt.decode(token, secret);
-				if (decoded.exp <= Date.now()) {
-					res.ok({
-						text: "Access token has expired"
+					let repeatLike = await Like.findOne({
+						commentId,
+						userId,
+						like: 2,
 					});
-				}
-				else{
-					console.log("id = " + decoded.iss);
-					var userId = decoded.iss;
-					Like.destroy({
-						id: likeId,
-					}).exec(function(err,data){
-						if(err){
-							console.log("error = " + err);
-							res.ok({
-								text: "like destroy not success"
-							})
-						}
-						else{
-							console.log("data = " + data);
-							res.ok({
-								text: "like destroy success",
-							})
-						}
+					console.log(repeatLike);
+					if(!repeatLike){
+						console.log("null");
+						await Like.create({
+							commentId,
+							userId,
+							like: 2,
+						})
+						console.log("commentId = " + commentId);
+						let newLike = await Like.find({
+							commentId,
+							like: 2,
+							userId: userId,
+						})
+						await Comment.update({
+							id: commentId
+						}, {
+							dislike: newLike.length
+						})
+						console.log("newLike.length = " + newLike.length);
+						return res.ok({
+							text: "like create success",
+						})
+					}
+					console.log("repeatLike = ");
+					console.log(repeatLike.id);
+					await Like.destroy({
+						id: repeatLike.id
 					})
-				}
-			}catch(error){
-				console.log("catch error = " + error);
-				res.ok({
-					text: "something went wrong" + error
-				})
-			}
-		}
-	},
-	
-	delDislike: function(req, res){
-		var token = req.headers['x-access-token'];
-		console.log("token = " + token);
-		var secret = 'zzggzz';
-		var disLikeId = req.body.disLikeId;
-		console.log(disLikeId);
-		if(token){
-			try{
-				var decoded = jwt.decode(token, secret);
-				if (decoded.exp <= Date.now()) {
-					res.ok({
-						text: "Access token has expired"
-					});
-				}
-				else{
-					console.log("id = " + decoded.iss);
-					var userId = decoded.iss;
-					Like.destroy({
-						id: disLikeId,
-					}).exec(function(err,data){
-						if(err){
-							console.log("error = " + err);
-							res.ok({
-								text: "dislike destroy not success"
-							})
-						}
-						else{
-							console.log("data = " + data);
-							res.ok({
-								text: "dislike destroy success",
-							})
-						}
+					let findLike = await Like.find({
+						commentId,
+						like: 2,
+					})
+					let like = findLike.length;
+					console.log('like = ' + like);
+					await Comment.update({
+						id: commentId
+					}, {
+						dislike: like
+					})
+						
+					return res.ok({
+						text: "like destroy success"
 					})
 				}
 			}catch(error){

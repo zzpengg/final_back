@@ -35,13 +35,12 @@ module.exports.routes = {
   '/': {
     view: 'homepage'
   },
-
   
   'post /user/login': 'UserController.login',
   'post /user/register': 'UserController.register',
   'get /user/islogin': 'UserController.checkAuth',
   'get /user/checkIdRepeat':'UserController.checkIdRepeat',
-  
+  'post /user/test':'UserController.test',
   'post /student/login': 'StudentController.login',
   'post /student/register': 'StudentController.register',
   'get /student/islogin': 'StudentController.checkAuth',
@@ -51,14 +50,15 @@ module.exports.routes = {
   'post /house/createMyHouse': 'HouseController.createMyHouse',
   'post /house/updateMyhouse': 'HouseController.updateMyHouse',
   'post /house/findFilterHouse': 'HouseController.findFilterHouse',
+  'get /house/findTheHouse': 'HouseController.findTheHouse',
+  'get /house/findHouseData': 'HouseController.findHouseData',
   
   'post /comment/createMyComment': 'CommentController.createMyComment',
   'post /comment/findHouseComment': 'CommentController.findHouseComment',
+  'post /comment/findBestComment': 'CommentController.findBestComment',
   
   'post /like/addLike': 'LikeController.addLike',
   'post /like/addDislike': 'LikeController.addDislike',
-  'post /like/delLike': 'LikeController.delLike',
-  'post /like/delDislike': 'LikeController.delDislike',
   
 
   /***************************************************************************

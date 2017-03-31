@@ -54,7 +54,7 @@ module.exports = {
 		}
 	},
 	
-	createMyHouse: function(req, res){
+	createMyHouse: async(req, res) => {
 		var token = req.headers['x-access-token'];
 		console.log(token);
 		var secret = 'zzggzz';
@@ -69,12 +69,18 @@ module.exports = {
 					});
 				}
 				else{
+					let id = decoded.iss;
+					let landlord = await User.findOne({
+						id,
+					});
+					console.log(landlord);
+					let phone = landlord.phone;
 					console.log(req.body.title);
 					console.log(req.body.area);
 					console.log(req.body.checkwater);
 					console.log(req.body.checkele);
 					console.log(req.body.checknet);
-					console.log("id = " + decoded.id);
+					console.log("id = " + decoded.iss);
 					House.create({
 						title: req.body.title,
 						area: req.body.area,
@@ -86,6 +92,8 @@ module.exports = {
 						checknet:req.body.checknet,
 						type: req.body.type,
 						landlordId: decoded.iss,
+						phone: phone,
+						score: 0,
 					}).exec(function(err,data){
 						if(err){
 							console.log("error = " + err);
@@ -192,5 +200,67 @@ module.exports = {
 			})
         })
 	},
+	
+	findTheHouse: async(req, res) => {
+		try{
+			let id = req.body.houseId;
+			let findHouse = await House.findOne({
+				id
+			});
+			if(!findHouse){
+				console.log('house not found');
+				return res.ok({
+					text: 'house not found'
+				});
+			}
+			else{
+				console.log(findHouse);
+				return res.ok({
+					text: 'house find success',
+					data: findHouse,
+				})
+			}
+		}catch(error){
+			console.log("catch error = " + error);
+			res.ok({
+				text: "something went wrong" + error
+			})
+		}
+	},
+	
+	findHouseData: async(req, res) => {
+		try{
+			let findHouse = await House.find({});
+			if(!findHouse){
+				console.log('house is null');
+				return res.ok({
+					text: 'house is null'
+				});
+			}
+			else{
+				console.log(findHouse);
+				let newHouse = [];
+				findHouse.map(({ id, title, area, rent, score }, index) => {
+					newHouse.push({
+						id,
+						title,
+						area, 
+						rent, 
+						score
+					})
+				})
+				console.log(newHouse);
+				return res.ok({
+					text: 'house find success',
+					data: newHouse,
+				})
+			}
+		}catch(error){
+			console.log("catch error = " + error);
+			res.ok({
+				text: "something went wrong" + error
+			})
+		}
+	}
 };
 

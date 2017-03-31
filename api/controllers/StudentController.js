@@ -61,17 +61,15 @@ module.exports = {
 	register: function (req, res){
 		try {
 			var name = req.body.name;
-			var phone = req.body.phone;
 			var gender = req.body.gender;
-			var address = req.body.address;
+			var email = req.body.email;
 			var account = req.body.account;
 			var password = req.body.password;
 			var secret = 'zzggzz';
 			var newStudent = Student.create({
 				name: name,
-                phone: phone,
                 gender: gender,
-                address: address,
+                email: email,
                 account: account,
                 password: password,
 			})
@@ -138,7 +136,7 @@ module.exports = {
 				console.log("decoded = " + decoded.iss);
 				if (decoded.exp <= Date.now()) {
 					console.log("Access token has expired");
-					res.ok({
+					return res.ok({
 						text: "Access token has expired"
 					});
 				}
@@ -146,14 +144,17 @@ module.exports = {
 					Student.findOne({ id: decoded.iss }).exec(function(err,data){
 						if(err){
 							console.log("error = " + err);
-							res.ok({
+							return res.ok({
 								text: "Student not found"
 							})
 						}
+						if(!data){
+							return res.ok({
+								text: "student not data",
+							})
+						}
 						else{
-							console.log("data = " + data);
-							console.log("name = " + data.name);
-							res.ok({
+							return res.ok({
 								text: "check success",
 								name: data.name
 							})
@@ -163,7 +164,7 @@ module.exports = {
 				
 			}catch (error){
 				console("catch error = " + error);
-				res.ok({
+				return res.ok({
 					text: "something went wrong"
 				})
 			}

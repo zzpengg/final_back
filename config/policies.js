@@ -32,6 +32,8 @@ module.exports.policies = {
     'register': [],
     'login': [],
     'checkAuth': [],
+    'checkIdRepeat': [],
+    'test': [],
   },
   
   'StudentController': {
@@ -45,18 +47,19 @@ module.exports.policies = {
 		'createMyHouse': [],
 		'updateMyHouse': [],
 		'findFilterHouse': [],
+		'findTheHouse': [],
+		'findHouseData': [],
 	},
 	
 	'CommentController': {
 		'createMyComment': [],
 		'findHouseComment': [],
+		'findBestComment': [],
 	},
 	
 	'LikeController': {
 		'addLike': [],
 		'addDislike': [],
-		'delLike': [],
-		'delDislike': [],
 	},
   /***************************************************************************
   *                                                                          *

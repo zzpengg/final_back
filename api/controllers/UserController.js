@@ -8,17 +8,24 @@
 const jwt = require('jwt-simple');
 
 module.exports = {
-	checkIdRepeat: function(req,res) {
+	checkIdRepeat: async (req,res) => {
 		try{
-			var name = req.headers['name'];
-			var result =  User.findOne({
-				name:name
-			}).exec(function(err, data){
+			let account = await req.body.account;
+			console.log("gg");
+			console.log(account);
+			let result =await User.findOne({
+				account: account
+			}).exec( (err, data) => {
 				if(err){
-					console.log(err);
+					console.log(err+"fuck you");
 					res.ok({
 						text: 'user not found'
 					})
+				}
+				if(!data){
+					res.ok({
+						text: 'not found'
+					});
 				}
 				else{
 				 res.ok({
@@ -30,9 +37,9 @@ module.exports = {
 			console.log("catch error = " + err);
 		}	
 	},
-	login: (req, res) => {
+	login: async(req, res) => {
 		try {
-			var account = req.body.account;
+			var account =await  req.body.account;
 			console.log(account);
 			var password = req.body.password;
 			console.log(password);
@@ -200,5 +207,29 @@ module.exports = {
 		}
 
 	},
+	
+	upload: function  (req, res) {
+		console.log("upload");
+		req.file('avatar').upload({
+		  dirname: require('path').resolve(sails.config.appPath, 'assets/images')
+		},function (err, uploadedFiles) {
+		  if (err) return res.negotiate(err);
+		
+		  return res.json({
+		    message: uploadedFiles.length + ' file(s) uploaded successfully!',
+		    file: uploadedFiles
+		  });
+		});
+	  },
+	  
+	test: function  (req, res) {
+		console.log("upload");
+		console.log(req.body.avatar);
+		res.ok({
+			text: 'upload success',
+			file: req.body.avatar
+		})
+	},
+	  
 };
 
