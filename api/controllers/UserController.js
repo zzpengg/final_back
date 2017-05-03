@@ -4,42 +4,42 @@
  * @description :: Server-side logic for managing users
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
- 
+
 const jwt = require('jwt-simple');
 
 module.exports = {
-	checkIdRepeat: async (req,res) => {
-		try{
+	checkIdRepeat: async (req, res) => {
+		try {
 			let account = await req.body.account;
 			console.log("gg");
 			console.log(account);
-			let result =await User.findOne({
+			let result = await User.findOne({
 				account: account
-			}).exec( (err, data) => {
-				if(err){
-					console.log(err+"fuck you");
+			}).exec((err, data) => {
+				if (err) {
+					console.log(err + "fuck you");
 					res.ok({
 						text: 'user not found'
 					})
 				}
-				if(!data){
+				if (!data) {
 					res.ok({
 						text: 'not found'
 					});
 				}
-				else{
-				 res.ok({
-				 	data:1
-				 })
+				else {
+					res.ok({
+						data: 1
+					})
 				}
-		 })
-		} catch (err){
+			})
+		} catch (err) {
 			console.log("catch error = " + err);
-		}	
+		}
 	},
-	login: async(req, res) => {
+	login: async (req, res) => {
 		try {
-			var account =await  req.body.account;
+			var account = await req.body.account;
 			console.log(account);
 			var password = req.body.password;
 			console.log(password);
@@ -47,14 +47,14 @@ module.exports = {
 			var result = User.findOne({
 				account: account,
 				password: password,
-			}).exec(function(err, data){
-				if(err){
+			}).exec(function (err, data) {
+				if (err) {
 					console.log(err);
 					return res.ok({
 						text: 'user not found'
 					})
 				}
-				if(!data){
+				if (!data) {
 					return res.ok({
 						text: 'user not found'
 					})
@@ -63,38 +63,38 @@ module.exports = {
 				console.log(data);
 				console.log("username = " + data.name);
 				var moment = require("moment");
-			    var expires = moment().add(7, 'days').valueOf();
-			    console.log("id = " + data.id);
-			    var token = jwt.encode({
-			      iss: data.id,
-			      exp: expires,
-			      name: data.name
-			    }, secret);
-			    User.update({
-			    	account: account,
-			    	password: password
-			    },{
-			    	token: token
-			    }).exec(function(err, updated){
-			    	if(err){
-			    		console.log("updated error");
-			    	}
-			    	console.log("token = " + token);
-					console.log("data = " + updated);
-					res.ok({
-						text: 'login success',
-						token: token,
-					});
-			    })
-			    
+				var expires = moment().add(7, 'days').valueOf();
+				console.log("id = " + data.id);
+				var token = jwt.encode({
+					iss: data.id,
+					exp: expires,
+					name: data.name
+				}, secret);
+				User.update({
+					account: account,
+					password: password
+				}, {
+						token: token
+					}).exec(function (err, updated) {
+						if (err) {
+							console.log("updated error");
+						}
+						console.log("token = " + token);
+						console.log("data = " + updated);
+						res.ok({
+							text: 'login success',
+							token: token,
+						});
+					})
+
 			})
-		} catch (err){
+		} catch (err) {
 			console.log("catch error = " + err);
 			res.serverError(err);
 		}
 	},
-	
-	register: function (req, res){
+
+	register: function (req, res) {
 		try {
 			var name = req.body.name;
 			var phone = req.body.phone;
@@ -105,124 +105,108 @@ module.exports = {
 			var secret = 'zzggzz';
 			var newUser = User.create({
 				name: name,
-                phone: phone,
-                gender: gender,
-                address: address,
-                account: account,
-                password: password,
+				phone: phone,
+				gender: gender,
+				address: address,
+				account: account,
+				password: password,
 			})
-			.then(function(){
-				
-				var result = User.findOne({
-					account: account,
-					password: password,
-				}).exec(function(err, data){
-					if(err){
-						console.log(err);
-						return res.ok({
-							text: 'user not found'
-						})
-					}
-					if(!data){
-						return res.ok({
-							text: 'user not found'
-						})
-					}
-					console.log("heoolo");
-					console.log(data);
-					console.log("username = " + data.name);
-					var moment = require("moment");
-				    var expires = moment().add(7, 'days').valueOf();
-				    console.log("id = " + data.id);
-				    var token = jwt.encode({
-				      iss: data.id,
-				      exp: expires,
-				      name: data.name
-				    }, secret);
-				    User.update({
-				    	account: account,
-				    	password: password
-				    },{
-				    	token: token
-				    }).exec(function(err, updated){
-				    	if(err){
-				    		console.log("updated error");
-				    	}
-				    	console.log("token = " + token);
-						console.log("data = " + updated);
-						res.ok({
-							text: 'register success',
-							token: token,
-						});
-				    })
-				    
+				.then(function () {
+
+					var result = User.findOne({
+						account: account,
+						password: password,
+					}).exec(function (err, data) {
+						if (err) {
+							console.log(err);
+							return res.ok({
+								text: 'user not found'
+							})
+						}
+						if (!data) {
+							return res.ok({
+								text: 'user not found'
+							})
+						}
+						console.log("heoolo");
+						console.log(data);
+						console.log("username = " + data.name);
+						var moment = require("moment");
+						var expires = moment().add(7, 'days').valueOf();
+						console.log("id = " + data.id);
+						var token = jwt.encode({
+							iss: data.id,
+							exp: expires,
+							name: data.name
+						}, secret);
+						User.update({
+							account: account,
+							password: password
+						}, {
+								token: token
+							}).exec(function (err, updated) {
+								if (err) {
+									console.log("updated error");
+								}
+								console.log("token = " + token);
+								console.log("data = " + updated);
+								res.ok({
+									text: 'register success',
+									token: token,
+								});
+							})
+
+					})
+
 				})
-				
-			})
 		} catch (e) {
 			res.serverError(e);
 		}
 	},
-	
-	checkAuth: function(req, res) {
-		var token = req.headers['x-access-token'];
-		console.log("token = " + token);
-		var secret = 'zzggzz';
-		if(token){
-			try {
-				var decoded = jwt.decode(token, secret);
-				if (decoded.exp <= Date.now()) {
-					console.log("Access token has expired");
+
+	checkAuth: function (req, res) {
+		try {
+			User.findOne({ id: decoded.iss }).exec(function (err, data) {
+				if (err) {
+					res.serverError(e);
+				}
+				if (!data) {
 					res.ok({
-						text: "Access token has expired"
+						text: 'not found'
 					});
 				}
-				else{
-					User.findOne({ id: decoded.iss }).exec(function(err,data){
-						if(err){
-							res.serverError(e);
-						}
-						if(!data){
-							res.ok({
-								text: 'not found'
-							});
-						}
-						else{
-							console.log("data = " + data);
-							console.log("name = " + data.name);
-							res.ok({
-								text: "check success",
-								name: data.name
-							})
-						}
+				else {
+					console.log("data = " + data);
+					console.log("name = " + data.name);
+					res.ok({
+						text: "check success",
+						name: data.name
 					})
 				}
-				
-			}catch (error){
-				console("catch error = " + error);
-				res.ok({
-					text: "something went wrong"
-				})
-			}
+			})
+		} catch (error) {
+			console("catch error = " + error);
+			res.ok({
+				text: "something went wrong"
+			})
 		}
-
 	},
-	
-	upload: function  (req, res) {
+
+	upload: function (req, res) {
 		console.log("upload");
 		req.file('avatar').upload({
-		  dirname: require('path').resolve(sails.config.appPath, 'assets/images')
-		},function (err, uploadedFiles) {
-		  if (err) return res.negotiate(err);
-		
-		  return res.json({
-		    message: uploadedFiles.length + ' file(s) uploaded successfully!',
-		    file: uploadedFiles
-		  });
+			dirname: require('path').resolve(sails.config.appPath, 'assets/images')
+		}, function (err, uploadedFiles) {
+			if (err) return res.negotiate(err);
+
+			return res.json({
+				message: uploadedFiles.length + ' file(s) uploaded successfully!',
+				file: uploadedFiles
+			});
 		});
-	  },
-	  
-	test: function  (req, res) {
+	},
+
+	test: function (req, res) {
 		console.log("upload");
 		console.log(req.body.avatar);
 		res.ok({
@@ -230,6 +214,6 @@ module.exports = {
 			file: req.body.avatar
 		})
 	},
-	  
+
 };
 
