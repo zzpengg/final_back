@@ -14,7 +14,7 @@ module.exports = {
 		console.log(req.body.star);
 
 		try {
-			let decode=res.locals.decoded;
+			let decoded=res.locals.decoded;
 			
 			console.log("id = " + decoded.iss);
 			let houseId = req.body.houseId;

@@ -128,7 +128,7 @@ module.exports = {
 
 	checkAuth: function (req, res) {
 		try {
-			let decode = res.locals.decoded;
+			let decoded = res.locals.decoded;
 
 			Student.findOne({ id: decoded.iss }).exec(function (err, data) {
 				if (err) {

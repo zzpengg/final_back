@@ -9,7 +9,7 @@ module.exports = {
 
 	addLike: async (req, res) => {
 		try {
-			let decode = res.locals.decoded;
+			let decoded = res.locals.decoded;
 
 			var commentId = req.body.commentId;
 			console.log(req.body.commentId);
@@ -77,7 +77,7 @@ module.exports = {
 
 	addDislike: async (req, res) => {
 		try {
-			let decode = res.locals.decoded;
+			let decoded = res.locals.decoded;
 
 			var commentId = req.body.commentId;
 			console.log(req.body.commentId);

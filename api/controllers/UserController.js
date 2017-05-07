@@ -166,6 +166,7 @@ module.exports = {
 
 	checkAuth: function (req, res) {
 		try {
+			let decoded=res.locals.decoded;
 			User.findOne({ id: decoded.iss }).exec(function (err, data) {
 				if (err) {
 					res.serverError(e);

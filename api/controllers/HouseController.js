@@ -19,7 +19,7 @@ module.exports = {
 
 	findMyHouse: function (req, res) {
 		try {
-			let decode = res.locals.decoded;
+			let decoded = res.locals.decoded;
 			House.find({ landlordId: decoded.iss }).exec(function (err, findData) {
 				if (err) {
 					console.log("error = " + err);
@@ -44,7 +44,7 @@ module.exports = {
 
 	createMyHouse: async (req, res) => {
 		try {
-			let decode = res.locals.decoded;
+			let decoded = res.locals.decoded;
 			console.log(req.body.title);
 			console.log(req.body.area);
 
@@ -98,7 +98,7 @@ module.exports = {
 
 	updateMyHouse: function (req, res) {
 		try {
-			let decode = res.locals.decoded;
+			let decoded = res.locals.decoded;
 			console.log(req.body.title);
 			console.log(req.body.area);
 			console.log(req.body.id);
