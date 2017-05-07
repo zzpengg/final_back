@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "ejs": "2.3.4",
     "grunt": "1.0.1",
     "grunt-babel": "^6.0.0",
@@ -38,6 +39,7 @@
   "author": "ubuntu",
   "license": "",
   "devDependencies": {
-    "babel-plugin-syntax-async-functions": "^6.13.0"
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-regenerator": "^6.24.1"
   }
 }
