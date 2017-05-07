@@ -41,9 +41,15 @@ module.exports.routes = {
   'get /user/islogin': 'UserController.checkAuth',
   'get /user/checkIdRepeat':'UserController.checkIdRepeat',
   'post /user/test':'UserController.test',
+  'get /user/getMyInfo': 'UserController.getMyInfo',
+  'post /user/updateMyInfo': 'UserController.updateMyInfo',
+  'post /user/FBLogin': 'UserController.FBLogin',
+  
   'post /student/login': 'StudentController.login',
   'post /student/register': 'StudentController.register',
   'get /student/islogin': 'StudentController.checkAuth',
+  'get /student/getMyInfo': 'StudentController.getMyInfo',
+  'post /student/updateMyInfo': 'StudentController.updateMyInfo',
 
   'get /house/index': 'HouseController.index',
   'get /house/findMyHouse': 'HouseController.findMyHouse',
@@ -52,10 +58,15 @@ module.exports.routes = {
   'post /house/findFilterHouse': 'HouseController.findFilterHouse',
   'get /house/findTheHouse': 'HouseController.findTheHouse',
   'get /house/findHouseData': 'HouseController.findHouseData',
+  'post /house/findTheUserHouse': 'HouseController.findTheUserHouse',
+  'post /house/deleteMyHouse': 'HouseController.deleteMyHouse',
+  'post /house/uploadhouse': 'HouseController.uploadhousephoto',
+  'post /house/deletehousephoto':'HouseController.deletehousephoto',
   
   'post /comment/createMyComment': 'CommentController.createMyComment',
   'post /comment/findHouseComment': 'CommentController.findHouseComment',
   'post /comment/findBestComment': 'CommentController.findBestComment',
+  'post /comment/createLandlordComment': 'CommentController.createLandlordComment',
   
   'post /like/addLike': 'LikeController.addLike',
   'post /like/addDislike': 'LikeController.addDislike',

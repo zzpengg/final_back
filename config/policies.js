@@ -34,12 +34,17 @@ module.exports.policies = {
     'checkAuth': [],
     'checkIdRepeat': [],
     'test': [],
+    'getMyInfo': [],
+    'updateMyInfo': [],
+    'FBLogin': [],
   },
   
   'StudentController': {
     'register': [],
     'login': [],
     'checkAuth': [],
+    'getMyInfo': [],
+    'updateMyInfo': [],
   },
 	
 	'HouseController': {
@@ -49,12 +54,17 @@ module.exports.policies = {
 		'findFilterHouse': [],
 		'findTheHouse': [],
 		'findHouseData': [],
+		'findTheUserHouse': [],
+		'deleteMyHouse': [],
+		'uploadhousephoto': [],
+		'deletehousephoto':[]
 	},
 	
 	'CommentController': {
 		'createMyComment': [],
 		'findHouseComment': [],
 		'findBestComment': [],
+		'createLandlordComment': [],
 	},
 	
 	'LikeController': {

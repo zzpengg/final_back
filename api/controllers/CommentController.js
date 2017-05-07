@@ -31,7 +31,11 @@ module.exports = {
 					console.log("id = " + decoded.iss);
 					let houseId = req.body.houseId;
 					let userId = decoded.iss;
-					let name = decoded.name;
+					let student = await Student.findOne({
+						id: decoded.iss
+					});
+					console.log(student);
+					let name = student.name;
 					let content = req.body.content;
 					let star = req.body.star;
 					await Comment.create({
@@ -175,6 +179,58 @@ module.exports = {
 			res.ok({
 				text: "something went wrong" + error
 			})
+		}
+	},
+	
+	createLandlordComment: async(req, res) => {
+		console.log("*******createLandlordComment*********");
+		let token = req.headers['x-access-token'];
+		console.log("token = " + token);
+		let secret = 'zzggzz';
+		console.log(req.body.houseId);
+		console.log(req.body.content);
+		if(token){
+			try{
+				let decoded = jwt.decode(token, secret);
+				if (decoded.exp <= Date.now()) {
+					console.log("Access token has expired");
+					res.ok({
+						text: "Access token has expired"
+					});
+				}
+				else{
+					console.log("id = " + decoded.iss);
+					let houseId = req.body.houseId;
+					let userId = decoded.iss;
+					let name = decoded.name;
+					let content = req.body.content;
+					let user = await User.findOne({
+						id: userId
+					});
+					let avatar = user.avatar;
+					console.log(user);
+					console.log(avatar);
+					await Comment.create({
+						houseId: houseId,
+						userId: userId,
+						name: name,
+						avatar: avatar,
+						content: content,
+						like: 0,
+						dislike: 0,
+					})
+					
+					res.ok({
+						text: "comment create success",
+					})
+
+				}
+			}catch(error){
+				console.log("catch error = " + error);
+				res.ok({
+					text: "something went wrong" + error
+				})
+			}
 		}
 	},
 };

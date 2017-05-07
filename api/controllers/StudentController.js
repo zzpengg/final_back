@@ -99,7 +99,8 @@ module.exports = {
 				    var token = jwt.encode({
 				      iss: data.id,
 				      exp: expires,
-				      name: data.name
+				      name: data.name,
+				      identity: 'student',
 				    }, secret);
 				    Student.update({
 				    	account: account,
@@ -170,5 +171,108 @@ module.exports = {
 			}
 		}
 
+	},
+	
+	getMyInfo: function(req, res) {
+		var token = req.headers['x-access-token'];
+		console.log("token = " + token);
+		var secret = 'zzggzz';
+		if(token){
+			try {
+				var decoded = jwt.decode(token, secret);
+				console.log("decoded = " + decoded.iss);
+				if (decoded.exp <= Date.now()) {
+					console.log("Access token has expired");
+					return res.ok({
+						text: "Access token has expired"
+					});
+				}
+				else{
+					Student.findOne({ id: decoded.iss }).exec(function(err,data){
+						if(err){
+							console.log("error = " + err);
+							return res.ok({
+								text: "Student not found"
+							})
+						}
+						if(!data){
+							return res.ok({
+								text: "student not data",
+							})
+						}
+						else{
+							return res.ok({
+								text: "getMyInfo success",
+								data: data
+							})
+						}
+					})
+				}
+				
+			}catch (error){
+				console("catch error = " + error);
+				return res.ok({
+					text: "something went wrong"
+				})
+			}
+		}
+	},
+	
+	updateMyInfo: function(req, res) {
+		console.log("**********updateMyInfo************");
+		var token = req.headers['x-access-token'];
+		let name = req.body.name;
+		let password = req.body.password;
+		console.log("token = " + token);
+		console.log('name = ' + name);
+		console.log("password = " + password);
+		var secret = 'zzggzz';
+		if(token){
+			try {
+				var decoded = jwt.decode(token, secret);
+				console.log("decoded = " + decoded.iss);
+				if (decoded.exp <= Date.now()) {
+					console.log("Access token has expired");
+					return res.ok({
+						text: "Access token has expired"
+					});
+				}
+				else{
+					Student.findOne({ id: decoded.iss }).exec(function(err,data){
+						if(err){
+							console.log("error = " + err);
+							return res.ok({
+								text: "Student not found"
+							})
+						}
+						if(!data){
+							return res.ok({
+								text: "student not data",
+							})
+						}
+						else{
+							console.log("update")
+							Student.update({
+								id: decoded.iss
+							},{
+								name: name,
+								password: password,
+							}).exec(function(err, data){
+								console.log("update success");
+								return res.ok({
+									text: "updateMyInfo success",
+								})
+							})
+						}
+					})
+				}
+				
+			}catch (error){
+				console("catch error = " + error);
+				return res.ok({
+					text: "something went wrong"
+				})
+			}
+		}
 	},
 };
