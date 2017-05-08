@@ -71,6 +71,9 @@ module.exports.routes = {
   'post /like/addLike': 'LikeController.addLike',
   'post /like/addDislike': 'LikeController.addDislike',
   
+  'post /love/addLove': 'LoveController.addLove',
+  'post /love/findLove': 'LoveController.findLove',
+  
 
   /***************************************************************************
   *                                                                          *

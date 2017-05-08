@@ -71,6 +71,11 @@ module.exports.policies = {
 		'addLike': [],
 		'addDislike': [],
 	},
+	
+	'LoveController': {
+		'addLove': [],
+		'findLove': [],
+	}
   /***************************************************************************
   *                                                                          *
   * Here's an example of mapping some policies to run before a controller    *

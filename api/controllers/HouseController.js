@@ -7,7 +7,6 @@
  
 const jwt = require('jwt-simple');
 const fs = require("fs");
-
 module.exports = {
 	
 	index: function(req, res){
@@ -80,15 +79,26 @@ module.exports = {
 					}
 					console.log("id = " + decoded.iss);
 					console.log("data = " + findData);
-					User.findOne({ id: decoded.iss }).exec(function(err, data){
-						console.log(data);
-						findData.phone = data.phone;
-						res.ok({
-							text: "house check success",
-							data: findData,
-						})
+					res.ok({
+						text: "house check success",
+						data: findData,
 					})
-					
+				})
+			}
+			let findHouse = await House.findOne({
+				id
+			});
+			if(!findHouse){
+				console.log('house not found');
+				return res.ok({
+					text: 'house not found'
+				});
+			}
+			else{
+				console.log(findHouse);
+				return res.ok({
+					text: 'house find success',
+					data: findHouse,
 				})
 			}
 		}catch(error){
@@ -115,6 +125,11 @@ module.exports = {
 				}
 				else{
 					let id = decoded.iss;
+					let landlord = await User.findOne({
+						id,
+					});
+					console.log(landlord);
+					let phone = landlord.phone;
 					console.log(req.body.title);
 					console.log(req.body.area);
 					console.log(req.body.checkwater);
@@ -132,6 +147,7 @@ module.exports = {
 						checknet:req.body.checknet,
 						type: req.body.type,
 						landlordId: decoded.iss,
+						phone: phone,
 						path:[],
 						score: 0,
 					}).exec(function(err,data){
@@ -242,7 +258,6 @@ module.exports = {
 	},
 	
 	findTheHouse: async(req, res) => {
-		console.log("***findTheHouse***");
 		try{
 			let id = req.body.houseId;
 			let findHouse = await House.findOne({
@@ -256,12 +271,6 @@ module.exports = {
 			}
 			else{
 				console.log(findHouse);
-				console.log(findHouse.landlordId);
-				let user = await User.findOne({ id: findHouse.landlordId });
-				console.log(user);
-				let phone = user.phone;
-				findHouse.phone = phone;
-				console.log(phone);
 				return res.ok({
 					text: 'house find success',
 					data: findHouse,
@@ -288,14 +297,13 @@ module.exports = {
 			else{
 				console.log(findHouse);
 				let newHouse = [];
-				findHouse.map(({ id, title, area, rent, score, type }, index) => {
+				findHouse.map(({ id, title, area, rent, score }, index) => {
 					newHouse.push({
 						id,
 						title,
 						area, 
 						rent, 
-						score,
-						type,
+						score
 					})
 				})
 				console.log(newHouse);

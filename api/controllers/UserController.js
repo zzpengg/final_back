@@ -455,12 +455,6 @@ module.exports = {
 			res.serverError(e);
 		}
 	},
-	
-	addMyLove: async(req, res) => {
-		
-	}
-	
-	
 	  
 };
 
