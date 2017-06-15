@@ -147,7 +147,7 @@ module.exports = {
 				    mailvalidation.sendValidationEmail({
 				    	 revName: name,
 						 revAddress: email,
-						 validationURL: `https://test-zzpengg.c9users.io:8080/student/emailvalidation?token=${token}`
+						 validationURL: `http://ncuerent.ddns.net:1337/student/emailvalidation?token=${token}`
 				    });
 				    Student.update({
 				    	account: account,
