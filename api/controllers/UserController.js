@@ -8,7 +8,7 @@
 const jwt = require('jwt-simple');
 const fs = require("fs");
 const fetch = require('node-fetch');
-let  mailvalidation = require('final_back_validationemail');
+let  mailvalidation = require('send-validation-email');
 module.exports = {
 	checkIdRepeat: async (req,res) => {
 		try{

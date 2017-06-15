@@ -7,7 +7,7 @@
 const fetch = require('node-fetch');
 const jwt = require('jwt-simple');
 const fs = require("fs");
-let  mailvalidation = require('final_back_validationemail');
+let  mailvalidation = require('send-validation-email');
 module.exports = {
 	
 	login: function (req, res) {

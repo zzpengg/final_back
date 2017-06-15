@@ -6,7 +6,6 @@
   "keywords": [],
   "dependencies": {
     "ejs": "2.3.4",
-    "final_back_validationemail": "^1.0.0",
     "fs": "0.0.1-security",
     "grunt": "1.0.1",
     "grunt-babel": "^6.0.0",
