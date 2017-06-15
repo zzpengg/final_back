@@ -35,8 +35,11 @@ module.exports.policies = {
     'checkIdRepeat': [],
     'test': [],
     'getMyInfo': [],
-    'updateMyInfo': [],
+    'updateMyName': [],
+    'updateMyPhone': [],
     'FBLogin': [],
+    'FBRegister': [],
+    'emailvalidation':[],
   },
   
   'StudentController': {
@@ -45,6 +48,10 @@ module.exports.policies = {
     'checkAuth': [],
     'getMyInfo': [],
     'updateMyInfo': [],
+    'emailvalidation':[],
+    'upload': [],
+    'FBLogin': [],
+    'FBRegister': [],
   },
 	
 	'HouseController': {

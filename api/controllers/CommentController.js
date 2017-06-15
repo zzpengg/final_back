@@ -123,27 +123,45 @@ module.exports = {
 		}
 	},
 	
-	findHouseComment: function(req, res){
+	findHouseComment: async(req, res) => {
 		console.log("*******findHouseComment*********");
 		let houseId = req.body.houseId;
 		console.log(req.body.houseId);
 		try{
-			let data = Comment.find({
+			let data = await Comment.find({
 				houseId: houseId
-			}).exec(function(err, data){
-				if(!data){
-					res.notFound('comment not found');
+			});
+			if(!data){
+				return res.notFound('comment not found');
+			}else{
+				console.log("data = " + data);
+				for(let i=0;i<data.length;i++){
+					if(!data[i].star){ // landlord
+						let userName = await User.findOne({
+							id: data[i].userId
+						});
+						if(data[i].name == userName){
+							
+						}else{
+							data[i].name = userName.name;
+						}
+					}else{ // student
+						let studentName = await Student.findOne({
+							id: data[i].userId
+						});
+						if(data[i].name == studentName){
+							
+						}else{
+							data[i].name = studentName.name;
+						}
+					}
 				}
-				else{
-					console.log("data = " + data);
-					res.ok({
-						text: "comment find success",
-						data: data,
-					})
-					
-				}
-			})
-			
+				
+				return res.ok({
+					text: "comment find success",
+					data: data,
+				})
+			}
 		}catch(error){
 			console.log("catch error = " + error);
 			res.ok({
@@ -152,27 +170,50 @@ module.exports = {
 		}
 	},
 	
-	findBestComment: function(req, res){
+	findBestComment: async(req, res) => {
 		let houseId = req.body.houseId;
 		console.log(req.body.houseId);
 		try{
-			let data = Comment.find({
+			let data = await Comment.find({
 				where: { houseId: houseId },
 			    limit: 3,
 			    sort: 'like DESC'
-			}).exec(function(err, data){
-				if(!data){
-					res.notFound('comment not found');
-				}
-				else{
-					console.log("data = " + data);
-					res.ok({
-						text: "comment create success",
-						data: data,
-					})
-					
-				}
 			})
+			
+			if(!data){
+				return res.notFound('comment not found');
+			}
+			else{
+				console.log("data = " + data);
+				for(let i=0;i<data.length;i++){
+					if(!data[i].star){ // landlord
+						let userName = await User.findOne({
+							id: data[i].userId
+						});
+						if(data[i].name == userName){
+							
+						}else{
+							data[i].name = userName.name;
+						}
+					}else{ // student
+						let studentName = await Student.findOne({
+							id: data[i].userId
+						});
+						if(data[i].name == studentName){
+							
+						}else{
+							data[i].name = studentName.name;
+						}
+					}
+				}
+				
+				return res.ok({
+					text: "comment find best success",
+					data: data,
+				})
+				
+			}
+
 			
 		}catch(error){
 			console.log("catch error = " + error);

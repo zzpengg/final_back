@@ -35,6 +35,9 @@ module.exports.routes = {
   '/': {
     view: 'homepage'
   },
+  '/success':{
+    view: 'success'
+  },
   
   'post /user/login': 'UserController.login',
   'post /user/register': 'UserController.register',
@@ -42,14 +45,22 @@ module.exports.routes = {
   'get /user/checkIdRepeat':'UserController.checkIdRepeat',
   'post /user/test':'UserController.test',
   'get /user/getMyInfo': 'UserController.getMyInfo',
-  'post /user/updateMyInfo': 'UserController.updateMyInfo',
+  'post /user/updateMyName': 'UserController.updateMyName',
+  'post /user/updateMyPhone': 'UserController.updateMyPhone',
   'post /user/FBLogin': 'UserController.FBLogin',
+  'post /user/FBRegister': 'UserController.FBRegister',
+  'post /user/emailvalidation': 'UserController.emailvalidation',
+  'post /user/upload': 'UserController.upload',
   
   'post /student/login': 'StudentController.login',
   'post /student/register': 'StudentController.register',
   'get /student/islogin': 'StudentController.checkAuth',
   'get /student/getMyInfo': 'StudentController.getMyInfo',
   'post /student/updateMyInfo': 'StudentController.updateMyInfo',
+  'post /student/emailvalidation': 'StudentController.emailvalidation',
+  'post /student/upload': 'StudentController.upload',
+  'post /student/FBLogin': 'StudentController.FBLogin',
+  'post /student/FBRegister': 'StudentController.FBRegister',
 
   'get /house/index': 'HouseController.index',
   'get /house/findMyHouse': 'HouseController.findMyHouse',

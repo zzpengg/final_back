@@ -8,6 +8,7 @@
 const jwt = require('jwt-simple');
 
 module.exports = {
+	
 	addLike: async(req, res) => {
 		var token = req.headers['x-access-token'];
 		console.log("token = " + token);
@@ -42,7 +43,6 @@ module.exports = {
 						let newLike = await Like.find({
 							commentId,
 							like: 1,
-							userId: userId,
 						})
 						await Comment.update({
 							id: commentId
@@ -118,7 +118,6 @@ module.exports = {
 						let newLike = await Like.find({
 							commentId,
 							like: 2,
-							userId: userId,
 						})
 						await Comment.update({
 							id: commentId
@@ -129,27 +128,28 @@ module.exports = {
 						return res.ok({
 							text: "like create success",
 						})
+					}else{
+						console.log("repeatLike = ");
+						console.log(repeatLike.id);
+						await Like.destroy({
+							id: repeatLike.id
+						})
+						let findLike = await Like.find({
+							commentId,
+							like: 2,
+						})
+						let like = findLike.length;
+						console.log('like = ' + like);
+						await Comment.update({
+							id: commentId
+						}, {
+							dislike: like
+						})
+							
+						return res.ok({
+							text: "like destroy success"
+						})
 					}
-					console.log("repeatLike = ");
-					console.log(repeatLike.id);
-					await Like.destroy({
-						id: repeatLike.id
-					})
-					let findLike = await Like.find({
-						commentId,
-						like: 2,
-					})
-					let like = findLike.length;
-					console.log('like = ' + like);
-					await Comment.update({
-						id: commentId
-					}, {
-						dislike: like
-					})
-						
-					return res.ok({
-						text: "like destroy success"
-					})
 				}
 			}catch(error){
 				console.log("catch error = " + error);

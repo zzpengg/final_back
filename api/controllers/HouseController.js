@@ -59,51 +59,55 @@ module.exports = {
 	findTheUserHouse: async(req, res) => {
 		console.log('**********findTheUserHouse**********');
 		try{
-			let id = req.body.houseId;
-			var token = req.headers['x-access-token'];
-			var secret = 'zzggzz';
+			const id = req.body.houseId;
+			const token = req.headers['x-access-token'];
+			const secret = 'zzggzz';
 			console.log("Token = " + token);
 			if(token){
-				var decoded = jwt.decode(token, secret);
+				const decoded = jwt.decode(token, secret);
 				if (decoded.exp <= Date.now()) {
-					res.ok({
+					return res.ok({
 						text: "Access token has expired"
 					});
 				}
 				House.findOne({ landlordId: decoded.iss, id }).exec(function(err,findData){
 					if(err){
 						console.log("error = " + err);
-						res.ok({
+					return	res.ok({
 							text: "user not found"
 						})
 					}
 					console.log("id = " + decoded.iss);
 					console.log("data = " + findData);
-					res.ok({
-						text: "house check success",
-						data: findData,
-					})
+					if(findData){
+						return	res.ok({
+							text: "house check success",
+							data: findData,
+						})
+					}
 				})
-			}
-			let findHouse = await House.findOne({
-				id
-			});
-			if(!findHouse){
-				console.log('house not found');
-				return res.ok({
-					text: 'house not found'
-				});
 			}
 			else{
-				console.log(findHouse);
-				return res.ok({
-					text: 'house find success',
-					data: findHouse,
-				})
+				let findHouse = await House.findOne({
+					id
+				});
+				if(!findHouse){
+					console.log('house not found');
+					return res.ok({
+						text: 'house not found'
+					});
+				}
+				else{
+					console.log(findHouse);
+					return res.ok({
+						text: 'house find success',
+						data: findHouse,
+					})
+				}
 			}
 		}catch(error){
 			console.log("catch error = " + error);
-			res.ok({
+		return res.ok({
 				text: "something went wrong" + error
 			})
 		}
@@ -149,6 +153,7 @@ module.exports = {
 						landlordId: decoded.iss,
 						phone: phone,
 						path:[],
+						remark:req.body.remark,
 						score: 0,
 					}).exec(function(err,data){
 						if(err){
@@ -175,16 +180,16 @@ module.exports = {
 	},
 	
 	updateMyHouse: function(req, res){
-		var token = req.headers['x-access-token'];
-		var secret = 'zzggzz';
+		const token = req.headers['x-access-token'];
+		const secret = 'zzggzz';
 		console.log(req.body.title);
 		console.log(req.body.area);
 		console.log(req.body.id);
 		if(token){
 			try{
-				var decoded = jwt.decode(token, secret);
+				const decoded = jwt.decode(token, secret);
 				if (decoded.exp <= Date.now()) {
-					res.ok({
+					return res.ok({
 						text: "Access token has expired"
 					});
 				}
@@ -206,18 +211,18 @@ module.exports = {
 				}).exec(function(err,data){
 					if(err){
 						console.log("error = " + err);
-						res.ok({
+						return res.ok({
 							text: "house update not success"
 						})
 					}
 					console.log("data = " + data);
-					res.ok({
+					return res.ok({
 						text: "house update success",
 					})
 				})
 			}catch(error){
-				console.log("catch error = " + error);
-				res.ok({
+				console.log("catch error update = " + error);
+				return res.ok({
 					text: "something went wrong" + error
 				})
 			}
@@ -278,7 +283,7 @@ module.exports = {
 			}
 		}catch(error){
 			console.log("catch error = " + error);
-			res.ok({
+			return res.ok({
 				text: "something went wrong" + error
 			})
 		}
@@ -297,13 +302,16 @@ module.exports = {
 			else{
 				console.log(findHouse);
 				let newHouse = [];
-				findHouse.map(({ id, title, area, rent, score }, index) => {
+				findHouse.map(({ id, title, area, rent, score, type, path, landlordId }, index) => {
 					newHouse.push({
 						id,
 						title,
 						area, 
 						rent, 
-						score
+						score,
+						type,
+						picture: path[0],
+						landlordId,
 					})
 				})
 				console.log(newHouse);
@@ -314,7 +322,7 @@ module.exports = {
 				})
 			}
 		}catch(error){
-			console.log("catch error = " + error);
+			console.log("catch error find house = " + error);
 			res.ok({
 				text: "something went wrong" + error
 			})
@@ -390,25 +398,25 @@ module.exports = {
 			}
 		}
 	},
-		uploadhousephoto: function  (req, res) {
+	uploadhousephoto: function  (req, res) {
 		console.log("*****uploadhouse******");
 		console.log(req.body.id);
-		var token = req.headers['x-access-token'];
+		const token = req.headers['x-access-token'];
 		console.log("token = " + token);
-		var secret = 'zzggzz';
+		const secret = 'zzggzz';
 		if(token){
-			var decoded = jwt.decode(token, secret);
+			const decoded = jwt.decode(token, secret);
 			if (decoded.exp <= Date.now()) {
 				console.log("Access token has expired");
-				return res.ok({
-					text: "Access token has expired"
-				});
+				// return res.ok({
+				// 	text: "Access token has expired"
+				// });
 			}
-		var landlordId = decoded.iss;
+		const landlordId = decoded.iss;
 		req.file('house').upload({
 		  dirname: require('path').resolve(sails.config.appPath, `assets/images/house/${landlordId}/${req.body.id}`)
 		},function (err, uploadedFiles) {
-		  if (err)  res.negotiate(err);
+		  if (err) return res.negotiate(err);
 		  let str = uploadedFiles[0].fd.split('/');
 		  House.findOne({id:req.body.id}).exec(function(err,data){
 		  	//console.log(data);
@@ -447,21 +455,21 @@ module.exports = {
 	},
 	deletehousephoto:function(req,res){
 		try{
-			var token = req.headers['x-access-token'];
+			const token = req.headers['x-access-token'];
 			console.log("token = " + token);
 			console.log (req.body);
-			var houseid = req.body.id;
-			var path = req.body.path;
-			var secret = 'zzggzz';
+			const houseid = req.body.id;
+			const path = req.body.path;
+			const secret = 'zzggzz';
 			if(token){
-				var decoded = jwt.decode(token, secret);
+				const decoded = jwt.decode(token, secret);
 				if (decoded.exp <= Date.now()) {
 					console.log("Access token has expired");
-					return res.ok({
-						text: "Access token has expired"
-					});
+					//  res.ok({
+					// 	text: "Access token has expired"
+					// });
 				}
-			var landlordId = decoded.iss;
+			const landlordId = decoded.iss;
 			House.findOne({id:houseid}).exec(function(err,data){
 						if(err){
 							console.log("error = " + err);
@@ -486,7 +494,7 @@ module.exports = {
 										  return res.ok();
 										});
 									  fs.unlink(`./assets/images/house/${landlordId}/${houseid}/${path}`,function(err){
-        								if(err) return console.log(err);
+        								if(err)  console.log(err);
         								console.log('file deleted successfully');
 									});  	
 								}
